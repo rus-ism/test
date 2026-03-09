@@ -1,0 +1,36 @@
+# Для Laravel проекта создайте .gitignore
+cat > .gitignore << 'EOF'
+/node_modules
+/vendor
+!.env.example
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+.DS_Store
+/storage/*.key
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/logs/*
+!/storage/framework/.gitkeep
+!/storage/logs/.gitkeep
+/public/storage
+/public/hot
+/public/build
+bootstrap/cache/*.php
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+.phpunit.result.cache
+.php_cs.cache
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+EOF
+# Docker
+/docker/mysql/data
+/docker/redis/data
+.docker/ssl
