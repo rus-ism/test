@@ -9,3 +9,6 @@ Route::get('/', function () {
 });
 
 Route::get('/test/start', [TestController::class, 'start']);
+Route::post('/test/start', [TestController::class, 'startTest']);
+
+Route::get('/test/{attempt}', [TestController::class, 'showTest']);
