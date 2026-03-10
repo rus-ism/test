@@ -12,3 +12,5 @@ Route::get('/test/start', [TestController::class, 'start']);
 Route::post('/test/start', [TestController::class, 'startTest']);
 
 Route::get('/test/{attempt}', [TestController::class, 'showTest']);
+
+Route::post('/test/{attempt}/submit', [TestController::class, 'submitTest']);

@@ -62,4 +62,12 @@ class TestController extends Controller
         return view('test.test', compact('questions','attempt'));
 
     }    
+
+
+    public function submitTest(Request $request, $attempt)
+    {
+
+        dd($request->all());
+
+    }    
 }
