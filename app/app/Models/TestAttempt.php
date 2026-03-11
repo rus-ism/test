@@ -16,7 +16,9 @@ class TestAttempt extends Model
         'lang',
         'score',
         'started_at',
-        'finished_at'
+        'finished_at',
+        'district_id',
+        'school_id'
     ];
 
 

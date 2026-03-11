@@ -22,7 +22,13 @@ RUN apt-get update && apt-get install -y \
     zip \
     && docker-php-ext-install zip \
     && apt-get clean
-        
+    
+    
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    zip \
+ && docker-php-ext-install zip
+ 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www

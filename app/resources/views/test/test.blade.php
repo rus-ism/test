@@ -120,11 +120,110 @@ name="answers[{{ $q->id }}]"
 {{-- MATCHING --}}
 @if($q->type == 'Matching')
 
-<div class="alert alert-warning">
-Вопрос на соответствие (будет реализован следующим шагом)
-</div>
+@php
+
+$options = $q->options;
+
+/* разделяем Row и Col */
+
+$parts = preg_split('/Col:/', $options);
+
+$rowPart = trim(str_replace('Row:','',$parts[0]));
+$colPart = trim($parts[1]);
+
+/* строки */
+
+$rows = explode(',', $rowPart);
+
+/* варианты */
+
+$cols = explode(',', $colPart);
+
+@endphp
+
+<table class="table table-bordered">
+
+<thead>
+<tr>
+<th>№</th>
+<th>Элемент</th>
+<th>Соответствие</th>
+</tr>
+</thead>
+
+<tbody>
+
+@foreach($rows as $row)
+
+@php
+
+$row = trim($row);
+
+/* номер строки */
+
+$number = substr($row,0,1);
+
+/* текст строки */
+
+$text = trim(substr($row,2));
+
+@endphp
+
+<tr>
+
+<td>{{ $number }}</td>
+
+<td>{{ $text }}</td>
+
+<td>
+
+<select
+class="form-select"
+name="answers[{{ $q->id }}][{{ $number }}]"
+>
+
+<option value="">--</option>
+
+@foreach($cols as $col)
+
+@php
+
+$col = trim($col);
+
+/* буква */
+
+$letter = substr($col,0,1);
+
+/* текст */
+
+$colText = trim(substr($col,2));
+
+@endphp
+
+<option value="{{ $letter }}">
+
+{{ $letter }}. {{ $colText }}
+
+</option>
+
+@endforeach
+
+</select>
+
+</td>
+
+</tr>
+
+@endforeach
+
+</tbody>
+
+</table>
 
 @endif
+
+
+
 
 
 </div>
