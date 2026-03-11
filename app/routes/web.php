@@ -19,3 +19,9 @@ Route::post('/test/{attempt}/submit', [TestController::class, 'submitTest']);
 Route::get('/api/schools/{district}', [TestController::class, 'getSchools']);
 
 Route::get('/test/result/{attempt}', [TestController::class, 'result']);
+
+Route::get('/api/server-time', function () {
+    return response()->json([
+        'time' => now()->format('Y-m-d H:i:s')
+    ]);
+});

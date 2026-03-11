@@ -284,9 +284,29 @@ name="answers[{{ $q->id }}]"
 
 const endTime = new Date("2026-03-12T13:00:00");
 
+let serverOffset = 0;
+
+async function initTimer(){
+
+    const response = await fetch('/api/server-time');
+
+    const data = await response.json();
+
+    const serverTime = new Date(data.time.replace(' ','T'));
+
+    const clientTime = new Date();
+
+    serverOffset = serverTime - clientTime;
+
+    updateTimer();
+
+    setInterval(updateTimer,1000);
+
+}
+
 function updateTimer(){
 
-    const now = new Date();
+    const now = new Date(Date.now() + serverOffset);
 
     let diff = Math.floor((endTime - now) / 1000);
 
@@ -303,6 +323,7 @@ function updateTimer(){
         }
 
         return;
+
     }
 
     let hours = Math.floor(diff / 3600);
@@ -318,9 +339,7 @@ function updateTimer(){
 
 }
 
-setInterval(updateTimer,1000);
-
-updateTimer();
+initTimer();
 
 </script>
 
