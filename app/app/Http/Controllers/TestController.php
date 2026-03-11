@@ -35,15 +35,17 @@ class TestController extends Controller
     }
 
 
-    
+
+
 
     public function startTest(Request $request)
     {
+        //dd($request);
         $attempt = TestAttempt::create([
             'student_name' => $request->student_name,
-            'subject' => $request->subject,
+            'subject' => trim($request->subject),
             'grade' => $request->grade,
-            'variant' => $request->variant,
+            'variant' => rand(1,2),//$request->variant,
             'lang' => $request->lang,
             'district_id' => $request->district_id,
             'school_id' => $request->school_id,
@@ -65,7 +67,7 @@ class TestController extends Controller
             ->where('variant','LIKE', $attempt->variant)
             ->where('lang', 'LIKE', $attempt->lang)
             ->get();
-
+        
         return view('test.test', compact('questions','attempt'));
 
     }    

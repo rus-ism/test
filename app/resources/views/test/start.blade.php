@@ -87,7 +87,11 @@
     </div>
 
     <div class="mb-3">
+        <!--
     <label class="form-label">Вариант</label>
+
+    <input type="text" value="{{ $variants}}" name="variant" class="form-control" disabled>
+    
     <select name="variant" class="form-select" required>
 
     
@@ -95,6 +99,8 @@
   
 
     </select>
+
+-->
     </div>
 
     <div class="mb-3">
