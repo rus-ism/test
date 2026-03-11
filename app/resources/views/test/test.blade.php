@@ -12,6 +12,30 @@
 
 <body>
 
+
+<div id="timer-box" style="
+position:fixed;
+top:5px;
+left:15px;
+background:#ffffff;
+border:2px solid #dc3545;
+padding:10px 16px;
+font-size:18px;
+font-weight:bold;
+border-radius:6px;
+z-index:9999;
+box-shadow:0 2px 6px rgba(0,0,0,0.15);
+">
+
+До окончания тестирования:
+<span id="timer">--:--:--</span>
+
+</div>
+
+
+
+
+
 <div class="container mt-5">
 
 <h3 class="mb-4">Тестирование</h3>
@@ -35,6 +59,21 @@
 <h5 class="mb-3">
 {{ $q->num }}. {{ $q->question }}
 </h5>
+
+@if(!empty($q->img))
+
+<div class="mt-3 mb-3 text-center">
+
+<img 
+src="{{ asset('storage/questions/'.$q->img) }}"
+class="img-fluid"
+style="max-height:300px"
+>
+
+</div>
+
+@endif
+
 
 {{-- SINGLE --}}
 @if($q->type == 'Single')
@@ -120,105 +159,105 @@ name="answers[{{ $q->id }}]"
 {{-- MATCHING --}}
 @if($q->type == 'Matching')
 
-@php
+    @php
 
-$options = $q->options;
+    $options = $q->options;
 
-/* разделяем Row и Col */
+    /* разделяем Row и Col */
 
-$parts = preg_split('/Col:/', $options);
+    $parts = preg_split('/Col:/', $options);
 
-$rowPart = trim(str_replace('Row:','',$parts[0]));
-$colPart = trim($parts[1]);
+    $rowPart = trim(str_replace('Row:','',$parts[0]));
+    $colPart = trim($parts[1]);
 
-/* строки */
+    /* строки */
 
-$rows = explode(',', $rowPart);
+    $rows = explode(',', $rowPart);
 
-/* варианты */
+    /* варианты */
 
-$cols = explode(',', $colPart);
+    $cols = explode(',', $colPart);
+    //dd($rows);
+    @endphp
 
-@endphp
+    <table class="table table-bordered">
 
-<table class="table table-bordered">
+    <thead>
+    <tr>
+    <th>#</th>
+    <th>Элемент</th>
+    <th>Соответствие</th>
+    </tr>
+    </thead>
 
-<thead>
-<tr>
-<th>№</th>
-<th>Элемент</th>
-<th>Соответствие</th>
-</tr>
-</thead>
+    <tbody>
 
-<tbody>
+    @foreach($rows as $row)
 
-@foreach($rows as $row)
+    @php
 
-@php
+    $row = trim($row);
+    //dd($row);
+    /* номер строки */
 
-$row = trim($row);
+    $number = mb_substr($row,0,1);
+    //dd($number);
+    /* текст строки */
 
-/* номер строки */
+    $text = trim(mb_substr($row,2));
+    //$text = $row;
+    @endphp
 
-$number = substr($row,0,1);
+    <tr>
 
-/* текст строки */
+    <td>{{ $number }}</td>
 
-$text = trim(substr($row,2));
+    <td>{{ $text }}</td>
 
-@endphp
+    <td>
 
-<tr>
+    <select
+    class="form-select"
+    name="answers[{{ $q->id }}][{{ $number }}]"
+    >
 
-<td>{{ $number }}</td>
+    <option value="">--</option>
 
-<td>{{ $text }}</td>
+    @foreach($cols as $col)
 
-<td>
+    @php
 
-<select
-class="form-select"
-name="answers[{{ $q->id }}][{{ $number }}]"
->
+    $col = trim($col);
 
-<option value="">--</option>
+    /* буква */
 
-@foreach($cols as $col)
+    $letter = mb_substr($col,0,1);
 
-@php
+    /* текст */
 
-$col = trim($col);
+    $colText = trim(mb_substr($col,2));
 
-/* буква */
+    @endphp
 
-$letter = substr($col,0,1);
+    <option value="{{ $letter }}">
 
-/* текст */
+    {{ $letter }}. {{ $colText }}
 
-$colText = trim(substr($col,2));
+    </option>
 
-@endphp
+    @endforeach
 
-<option value="{{ $letter }}">
+    </select>
 
-{{ $letter }}. {{ $colText }}
+    </td>
 
-</option>
+    </tr>
 
-@endforeach
+    @endforeach
 
-</select>
+    </tbody>
 
-</td>
-
-</tr>
-
-@endforeach
-
-</tbody>
-
-</table>
+    </table>
 
 @endif
 
@@ -239,6 +278,51 @@ $colText = trim(substr($col,2));
 </form>
 
 </div>
+
+
+<script>
+
+const endTime = new Date("2026-03-12T13:00:00");
+
+function updateTimer(){
+
+    const now = new Date();
+
+    let diff = Math.floor((endTime - now) / 1000);
+
+    if(diff <= 0){
+
+        document.getElementById("timer").innerHTML = "00:00:00";
+
+        alert("Время тестирования закончилось. Ответы будут отправлены.");
+
+        const form = document.querySelector("form");
+
+        if(form){
+            form.submit();
+        }
+
+        return;
+    }
+
+    let hours = Math.floor(diff / 3600);
+    let minutes = Math.floor((diff % 3600) / 60);
+    let seconds = diff % 60;
+
+    hours = String(hours).padStart(2,'0');
+    minutes = String(minutes).padStart(2,'0');
+    seconds = String(seconds).padStart(2,'0');
+
+    document.getElementById("timer").innerHTML =
+        hours + ":" + minutes + ":" + seconds;
+
+}
+
+setInterval(updateTimer,1000);
+
+updateTimer();
+
+</script>
 
 </body>
 </html>

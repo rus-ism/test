@@ -20,7 +20,7 @@ class TestController extends Controller
         $districts = District::orderBy('name_ru')->get();
 
         $subjects = TestBank::select('subject')->distinct()->orderBy('subject')->get();
-        $grades = TestBank::select('grade')->distinct()->orderBy('grade')->get();
+        $grades = TestBank::select('grade')->distinct()->orderBy('grade')->where('grade', '9')->get();
         $langs = TestBank::select('lang')->distinct()->orderBy('lang')->get();
         $variants = TestBank::select('variant')->distinct()->orderBy('variant')->get();
         $variants = rand(1,2);
@@ -41,11 +41,43 @@ class TestController extends Controller
     public function startTest(Request $request)
     {
         //dd($request);
+
+
+        /* ищем доступные варианты */
+
+        $variants = TestBank::where('subject',$request->subject)
+            ->where('grade',$request->grade)
+            ->where('lang',$request->lang)
+            ->distinct()
+            ->pluck('variant')
+            ->toArray();
+
+
+        if(empty($variants)){
+            abort(404,'Варианты теста не найдены');
+        }
+
+
+        /* если вариант один */
+
+        if(count($variants) == 1){
+
+            $variant = $variants[0];
+
+        } else {
+
+            /* выбираем случайный */
+
+            $variant = $variants[array_rand($variants)];
+
+        }
+
+
         $attempt = TestAttempt::create([
             'student_name' => $request->student_name,
             'subject' => trim($request->subject),
             'grade' => $request->grade,
-            'variant' => rand(1,2),//$request->variant,
+            'variant' => $variant,//rand(1,2),//$request->variant,
             'lang' => $request->lang,
             'district_id' => $request->district_id,
             'school_id' => $request->school_id,
@@ -62,12 +94,12 @@ class TestController extends Controller
 
         $attempt = TestAttempt::findOrFail($attemptId);
        //dd($attempt);
-        $questions = TestBank::where('subject', 'LIKE', $attempt->subject)
-            ->where('grade', 'LIKE', $attempt->grade)
+        $questions = TestBank::where('subject', 'LIKE', '%'.$attempt->subject.'%')
+            ->where('grade', 'LIKE', '%'.$attempt->grade.'%')
             ->where('variant','LIKE', $attempt->variant)
-            ->where('lang', 'LIKE', $attempt->lang)
+            ->where('lang', 'LIKE', '%'.$attempt->lang.'%')
             ->get();
-        
+        //dd($questions);
         return view('test.test', compact('questions','attempt'));
 
     }    
