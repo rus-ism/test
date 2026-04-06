@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 
-<title>Тест</title>
+<title>Тест {{$attempt->subject}}, в.{{$attempt->variant}}</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -13,24 +13,6 @@
 <body>
 
 
-<div id="timer-box" style="
-position:fixed;
-top:5px;
-left:15px;
-background:#ffffff;
-border:2px solid #dc3545;
-padding:10px 16px;
-font-size:18px;
-font-weight:bold;
-border-radius:6px;
-z-index:9999;
-box-shadow:0 2px 6px rgba(0,0,0,0.15);
-">
-
-До окончания тестирования:
-<span id="timer">--:--:--</span>
-
-</div>
 
 
 
@@ -65,7 +47,7 @@ box-shadow:0 2px 6px rgba(0,0,0,0.15);
 <div class="mt-3 mb-3 text-center">
 
 <img 
-src="{{ asset('storage/questions/'.$q->img) }}"
+src="{{ asset('/img/'.$q->img) }}"
 class="img-fluid"
 style="max-height:300px"
 >
@@ -154,10 +136,15 @@ name="answers[{{ $q->id }}]"
 
 @endif
 
-
+@php
+//dd(questions);
+@endphp
 
 {{-- MATCHING --}}
 @if($q->type == 'Matching')
+@php
+//dd($q);
+@endphp
 
     @php
 
@@ -166,18 +153,18 @@ name="answers[{{ $q->id }}]"
     /* разделяем Row и Col */
 
     $parts = preg_split('/Col:/', $options);
-
+    
     $rowPart = trim(str_replace('Row:','',$parts[0]));
     $colPart = trim($parts[1]);
 
     /* строки */
 
     $rows = explode(',', $rowPart);
-
+    
     /* варианты */
 
     $cols = explode(',', $colPart);
-    //dd($rows);
+    //dd($cols);
     @endphp
 
     <table class="table table-bordered">
@@ -223,6 +210,10 @@ name="answers[{{ $q->id }}]"
 
     <option value="">--</option>
 
+@php
+//dd($cols);
+@endphp
+
     @foreach($cols as $col)
 
     @php
@@ -232,7 +223,7 @@ name="answers[{{ $q->id }}]"
     /* буква */
 
     $letter = mb_substr($col,0,1);
-
+    
     /* текст */
 
     $colText = trim(mb_substr($col,2));
@@ -280,68 +271,7 @@ name="answers[{{ $q->id }}]"
 </div>
 
 
-<script>
 
-const endTime = new Date("2026-03-12T13:00:00");
-
-let serverOffset = 0;
-
-async function initTimer(){
-
-    const response = await fetch('/api/server-time');
-
-    const data = await response.json();
-
-    const serverTime = new Date(data.time.replace(' ','T'));
-
-    const clientTime = new Date();
-
-    serverOffset = serverTime - clientTime;
-
-    updateTimer();
-
-    setInterval(updateTimer,1000);
-
-}
-
-function updateTimer(){
-
-    const now = new Date(Date.now() + serverOffset);
-
-    let diff = Math.floor((endTime - now) / 1000);
-
-    if(diff <= 0){
-
-        document.getElementById("timer").innerHTML = "00:00:00";
-
-        alert("Время тестирования закончилось. Ответы будут отправлены.");
-
-        const form = document.querySelector("form");
-
-        if(form){
-            form.submit();
-        }
-
-        return;
-
-    }
-
-    let hours = Math.floor(diff / 3600);
-    let minutes = Math.floor((diff % 3600) / 60);
-    let seconds = diff % 60;
-
-    hours = String(hours).padStart(2,'0');
-    minutes = String(minutes).padStart(2,'0');
-    seconds = String(seconds).padStart(2,'0');
-
-    document.getElementById("timer").innerHTML =
-        hours + ":" + minutes + ":" + seconds;
-
-}
-
-initTimer();
-
-</script>
 
 </body>
 </html>

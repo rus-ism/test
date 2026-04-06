@@ -25,3 +25,6 @@ Route::get('/api/server-time', function () {
         'time' => now()->format('Y-m-d H:i:s')
     ]);
 });
+
+
+Route::get('/recalc-chemistry', [App\Http\Controllers\TestController::class, 'recalculateChemistry9Kaz']);

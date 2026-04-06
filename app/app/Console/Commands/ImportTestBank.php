@@ -28,7 +28,8 @@ protected $signature = 'import:test-bank';
      */
     public function handle()
     {
-        Excel::import(new TestBankImport, storage_path('app/TestBank.xlsx'));
+        //Excel::import(new TestBankImport, storage_path('app/TestBank.xlsx'));
+        Excel::import(new TestBankImport, storage_path('app/TestBank_geog_ru_1v_11ogn.xlsx'));
 
         $this->info('Import completed');
     }

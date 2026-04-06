@@ -37,6 +37,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql_import:/var/import
     networks:
       - laravel
 
