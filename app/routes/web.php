@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\Admin\StatsController;
 
 
 Route::get('/', function () {
@@ -28,3 +29,24 @@ Route::get('/api/server-time', function () {
 
 
 Route::get('/recalc-chemistry', [App\Http\Controllers\TestController::class, 'recalculateChemistry9Kaz']);
+
+
+Route::prefix('admin')->group(function(){
+
+
+    Route::get('/districts', [StatsController::class, 'districts']);
+
+    Route::get('/district/{id}', [StatsController::class, 'district']);
+
+    Route::get('/school/{school}/class/{grade}/subject/{subject}', 
+        [StatsController::class, 'subjectStats']);    
+
+     Route::get('/school/{id}', 
+        [StatsController::class, 'school'])
+        ->where('id','[0-9]+');
+
+    Route::get('/admin/school/{id}', [StatsController::class, 'school']);
+
+    
+
+});
