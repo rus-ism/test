@@ -96,6 +96,7 @@ class StatsController extends Controller
                 AVG(score) as avg_score
             ')
             ->where('school_id',$id)
+            ->whereNotNull('finished_at')
             ->groupBy('grade')
             ->orderBy('grade')
             ->get();
@@ -109,6 +110,7 @@ class StatsController extends Controller
                 AVG(score) as avg_score
             ')
             ->where('school_id',$id)
+            ->whereNotNull('finished_at')
             ->groupBy('grade','subject')
             ->get()
             ->groupBy('grade'); // важно!
