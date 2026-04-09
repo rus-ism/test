@@ -33,7 +33,7 @@ Route::get('/recalc-chemistry', [App\Http\Controllers\TestController::class, 're
 
 Route::prefix('admin')->group(function(){
 
-
+    Route::get('/', [StatsController::class, 'districts']);
     Route::get('/districts', [StatsController::class, 'districts']);
 
     Route::get('/district/{id}', [StatsController::class, 'district']);
@@ -47,6 +47,6 @@ Route::prefix('admin')->group(function(){
 
     Route::get('/admin/school/{id}', [StatsController::class, 'school']);
 
-    
+    Route::get('/subject-analysis', [StatsController::class, 'subjectAnalysis']);
 
 });
